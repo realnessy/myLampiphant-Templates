@@ -51,3 +51,4 @@ networks:
   proxy-shared:
     external: true
     name: proxy-shared
+
