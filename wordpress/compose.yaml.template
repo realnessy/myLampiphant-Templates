@@ -90,6 +90,8 @@ services:
       # __ENDIF
       - "traefik.http.services.${STACKNAME:-wordpress_d_www_example_com}.loadbalancer.server.port=80"
       - "traefik.docker.network=proxy-shared"
+    # __ELIF EXTERNAL_ACCESS=false
+    # Hint: this docker app can only be reached from LAN, not externally
     # __ENDIF
     deploy:
       restart_policy:
