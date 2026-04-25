@@ -60,6 +60,20 @@ services:
       - WORDPRESS_DEBUG=${WP_DEBUG:-false}
       - WORDPRESS_CONFIG_EXTRA=${WP_CONFIG_EXTRA:-}
 
+      # ==================== Security Keys ====================
+      # __IF WP_SECURITY_KEYS=true
+      - WORDPRESS_AUTH_KEY=${WP_AUTH_KEY}
+      - WORDPRESS_SECURE_AUTH_KEY=${WP_SECURE_AUTH_KEY}
+      - WORDPRESS_LOGGED_IN_KEY=${WP_LOGGED_IN_KEY}
+      - WORDPRESS_NONCE_KEY=${WP_NONCE_KEY}
+      - WORDPRESS_AUTH_SALT=${WP_AUTH_SALT}
+      - WORDPRESS_SECURE_AUTH_SALT=${WP_SECURE_AUTH_SALT}
+      - WORDPRESS_LOGGED_IN_SALT=${WP_LOGGED_IN_SALT}
+      - WORDPRESS_NONCE_SALT=${WP_NONCE_SALT}
+      # __ELIF WP_SECURITY_KEYS=false
+      # Security Keys werden von WordPress automatisch generiert (einfacher Modus)
+      # __ENDIF
+
     depends_on:
       db:
         condition: service_healthy
@@ -80,7 +94,6 @@ services:
     # __ELIF EXTERNAL_ACCESS=false
     # labels: []  
     # Hinweis: Der Container ist nur intern erreichbar (z. B. per VPN oder LAN).
-    # Es werden bewusst keine Traefik-Labels gesetzt.
     # __ENDIF
 
 # ===================== Volumes =====================
@@ -110,5 +123,4 @@ networks:
 # networks:
 #   proxy-shared:
 #     external: true
-# Hinweis: Das Netzwerk bleibt extern, damit interne Dienste (z.B. Traefik) es erreichen können.
 # __ENDIF
