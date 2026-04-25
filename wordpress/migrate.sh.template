@@ -1,0 +1,17 @@
+#!/bin/bash
+# WordPress Migration für !!CUSTOMERNAME!!
+
+set -euo pipefail
+
+CUSTOMER="!!CUSTOMERNAME!!"
+APPDOMAIN="!!APPDOMAIN!!"
+CONFIG_DIR="!!CONFIG_DIR!!"
+
+echo "WordPress Migration für ${CUSTOMER} (${APPDOMAIN})..."
+
+# Wenn Adminer aktiviert ist, wird hier nichts weiter benötigt
+# Der Kunde kann über adminer.!!DOMAIN!! auf die DB zugreifen
+
+echo "✅ Migration vorbereitet"
+echo "🔧 Zugriff auf Datenbank über Adminer: https://adminer.${DOMAIN}"
+echo "   Server: db, Benutzer: wpuser, Passwort: siehe .env"

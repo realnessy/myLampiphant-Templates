@@ -1,0 +1,23 @@
+services:
+  docusaurus:
+    image: node:20-alpine
+    container_name: ${STACKNAME:-docusaurus_d_docs_example_com}
+    restart: unless-stopped
+    working_dir: /app
+    networks:
+      - proxy-shared
+    volumes:
+      - /opt/docker-data/${CUSTOMERNAME:-customer_directory}/${STACKNAME:-docusaurus_d_docs_example_com}/website:/app
+    command: sh -c "npm install && npm run build && npx serve build -l 3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${STACKNAME:-docusaurus_d_docs_example_com}.rule=Host(`${APPDOMAIN:-docs.example.com}`)"
+      - "traefik.http.routers.${STACKNAME:-docusaurus_d_docs_example_com}.entrypoints=websecure"
+      - "traefik.http.routers.${STACKNAME:-docusaurus_d_docs_example_com}.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${STACKNAME:-docusaurus_d_docs_example_com}.loadbalancer.server.port=3000"
+      - "traefik.docker.network=proxy-shared"
+
+networks:
+  proxy-shared:
+    external: true
+

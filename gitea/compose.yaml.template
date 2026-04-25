@@ -1,0 +1,60 @@
+services:
+  server:
+    image: gitea/gitea:latest
+    networks:
+      - proxy-shared
+      - gitea_!!CUSTOMERNAME!!
+    volumes:
+      - !!DATA_DIR!!/data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "!!SSH_PORT!!:22"
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=mysql
+      - GITEA__database__HOST=db:3306
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=!!DBPWD!!
+      - GITEA__server__DOMAIN=!!GITEA_DOMAIN!!
+      - GITEA__server__ROOT_URL=https://!!GITEA_DOMAIN!!
+      - GITEA__server__HTTP_PORT=3000
+      - GITEA__server__SSH_PORT=!!SSH_PORT!!
+      - GITEA__server__SSH_DOMAIN=!!GITEA_DOMAIN!!
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.!!CUSTOMERNAME!!-gitea.rule=Host(`!!GITEA_DOMAIN!!`)"
+      - "traefik.http.routers.!!CUSTOMERNAME!!-gitea.entrypoints=websecure"
+      - "traefik.http.routers.!!CUSTOMERNAME!!-gitea.tls.certresolver=letsencrypt"
+      - "traefik.http.services.!!CUSTOMERNAME!!-gitea.loadbalancer.server.port=3000"
+      - "traefik.docker.network=proxy-shared"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mariadb:11.4-noble
+    networks:
+      - gitea_!!CUSTOMERNAME!!
+    volumes:
+      - !!DATA_DIR!!/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=!!MYSQL_ROOT_PASSWORD!!
+      - MYSQL_DATABASE=gitea
+      - MYSQL_USER=gitea
+      - MYSQL_PASSWORD=!!DBPWD!!
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+networks:
+  gitea_!!CUSTOMERNAME!!:
+    driver: overlay
+    attachable: true
+  proxy-shared:
+    external: true
+    name: proxy-shared

@@ -1,0 +1,16 @@
+#!/bin/bash
+# WordPress komplett löschen für !!CUSTOMERNAME!!
+
+set -euo pipefail
+
+CUSTOMER="!!CUSTOMERNAME!!"
+APPDOMAIN="!!APPDOMAIN!!"
+DATA_DIR="!!DATA_DIR!!"
+CONFIG_DIR="!!CONFIG_DIR!!"
+
+echo "⚠️  Lösche WordPress für ${CUSTOMER} (${APPDOMAIN}) inklusive ALLER Daten..."
+
+rm -rf "$CONFIG_DIR"
+rm -rf "$DATA_DIR"
+
+echo "✅ WordPress komplett gelöscht"

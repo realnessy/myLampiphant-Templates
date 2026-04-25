@@ -1,0 +1,24 @@
+#!/bin/bash
+CUSTOMER="!!CUSTOMERNAME!!" # Dein Name (Punkte durch Unterstriche), z.B. julian_snowden
+APPDOMAIN="!!APPDOMAIN!!" # Domain für WordPress, z.B. www.example.com
+DATA_DIR="!!DATA_DIR!!" # Pfad zu persistenten Daten
+COMPOSE_DIR="!!COMPOSE_DIR!!" # Pfad zur Docker-Compose-Konfiguration
+
+DB_PASSWORD="!!DB_PASSWORD!!" # Selbst gewähltes Passwort für die Datenbank
+DB_ROOT_PASSWORD="!!DB_ROOT_PASSWORD!!" # Selbst gewähltes Root-Passwort
+
+echo "Installiere WordPress für ${CUSTOMER} (${APPDOMAIN})..."
+
+mkdir -p "$COMPOSE_DIR"
+mkdir -p "$DATA_DIR/db"
+mkdir -p "$DATA_DIR/wordpress"
+
+chown -R 33:33 "$DATA_DIR/wordpress"
+
+echo "✅ Installation abgeschlossen"
+echo "🌐 WordPress URL: https://${APPDOMAIN}"
+echo "📁 Daten: ${DATA_DIR}"
+echo "🔐 DB User: wpuser / ${DB_PASSWORD}"
+echo "🔐 DB Root: root / ${DB_ROOT_PASSWORD}"
+echo ""
+echo "📝 Nach dem ersten Start bitte die WordPress-Installation unter https://${APPDOMAIN} abschließen."

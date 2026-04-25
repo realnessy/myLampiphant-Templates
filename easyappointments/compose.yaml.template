@@ -1,0 +1,53 @@
+services:
+  easyappointments:
+    image: alextselegidis/easyappointments:latest
+    networks:
+      - proxy-shared
+      - easyappointments_!!CUSTOMERNAME!!
+    environment:
+      - TZ=Europe/Berlin
+      - BASE_URL=https://buchung.!!DOMAIN!!
+      - DB_HOST=mysql
+      - DB_NAME=easyappointments
+      - DB_USERNAME=easyappointments
+      - DB_PASSWORD=!!DBPWD!!
+      - DB_PORT=3306
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.!!CUSTOMERNAME!!-easyappointments.rule=Host(`buchung.!!DOMAIN!!`)"
+      - "traefik.http.routers.!!CUSTOMERNAME!!-easyappointments.entrypoints=websecure"
+      - "traefik.http.routers.!!CUSTOMERNAME!!-easyappointments.tls.certresolver=letsencrypt"
+      - "traefik.http.services.!!CUSTOMERNAME!!-easyappointments.loadbalancer.server.port=80"
+      - "traefik.docker.network=proxy-shared"
+    depends_on:
+      - mysql
+    deploy:
+      restart_policy:
+        condition: any
+
+  mysql:
+    image: mariadb:11.4-noble
+    networks:
+      - easyappointments_!!CUSTOMERNAME!!
+    volumes:
+      - !!DATA_DIR!!/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=!!MSQLROOTPWD!!
+      - MYSQL_DATABASE=easyappointments
+      - MYSQL_USER=easyappointments
+      - MYSQL_PASSWORD=!!DBPWD!!
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    deploy:
+      restart_policy:
+        condition: any
+
+networks:
+  easyappointments_!!CUSTOMERNAME!!:
+    driver: overlay
+    attachable: true
+  proxy-shared:
+    external: true
+    name: proxy-shared

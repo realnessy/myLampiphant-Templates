@@ -1,0 +1,21 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-!!DOMAIN_NORMALIZED!!
+    restart: unless-stopped
+    networks:
+      - proxy-shared
+    volumes:
+      - !!DATA_DIR!!/html:/usr/share/nginx/html:ro
+      - !!DATA_DIR!!/nginx.conf:/etc/nginx/nginx.conf:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx-!!DOMAIN_NORMALIZED!!.rule=Host(`!!APPDOMAIN!!`)"
+      - "traefik.http.routers.nginx-!!DOMAIN_NORMALIZED!!.entrypoints=websecure"
+      - "traefik.http.routers.nginx-!!DOMAIN_NORMALIZED!!.tls.certresolver=letsencrypt"
+      - "traefik.http.services.nginx-!!DOMAIN_NORMALIZED!!.loadbalancer.server.port=80"
+      - "traefik.docker.network=proxy-shared"
+
+networks:
+  proxy-shared:
+    external: true

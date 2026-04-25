@@ -1,0 +1,22 @@
+
+# Logs
+*.log
+logs/
+
+# Komodo/IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Merge-Konflikte
+*.orig
+*.rej
+
+# Archive
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+
+# Environment
+*.env.local

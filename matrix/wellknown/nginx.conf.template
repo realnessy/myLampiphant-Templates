@@ -1,0 +1,10 @@
+server {
+    listen 80;
+    server_name !!DOMAIN!!;
+    
+    location /.well-known/matrix/ {
+        root /var/www;
+        add_header Access-Control-Allow-Origin *;
+        default_type application/json;
+    }
+}
