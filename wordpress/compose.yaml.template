@@ -92,6 +92,8 @@ services:
       - "traefik.http.routers.${STACKNAME}.tls.certresolver=letsencrypt-dns"
       # __ENDIF
     # __ELIF EXTERNAL_ACCESS=false
+    # __SETINVISIBLE LETSENCRYPT_METHOD=acme
+    # __DISABLE VOLUME_MODE=managed
     # labels: []  
     # Hinweis: Der Container ist nur intern erreichbar (z. B. per VPN oder LAN).
     # __ENDIF
